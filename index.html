@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BugMind AI - Software Quality Intelligence</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #07111f;
+            color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 240px;
+            background: #0b1728;
+            border-right: 1px solid #20334d;
+            padding: 25px 15px;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .logo span {
+            color: #55e6c1;
+        }
+
+        .menu {
+            padding: 13px;
+            margin: 7px 0;
+            border-radius: 9px;
+            color: #9eafc4;
+            cursor: pointer;
+        }
+
+        .menu:hover,
+        .menu.active {
+            background: #172940;
+            color: white;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+        }
+
+        .subtitle {
+            color: #91a2b8;
+            margin-top: 7px;
+        }
+
+        .online {
+            border: 1px solid #28506b;
+            color: #55e6c1;
+            padding: 9px 15px;
+            border-radius: 20px;
+        }
+
+        /* CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #0d1b2d;
+            border: 1px solid #20334d;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .card-title {
+            color: #8da0b7;
+            font-size: 14px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .red {
+            color: #ff6475;
+        }
+
+        .yellow {
+            color: #f4ca65;
+        }
+
+        .green {
+            color: #55e6c1;
+        }
+
+        /* GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: #0d1b2d;
+            border: 1px solid #20334d;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        /* CODE EDITOR */
+
+        textarea {
+            width: 100%;
+            min-height: 240px;
+            background: #060e19;
+            color: #d9e7f5;
+            border: 1px solid #29415e;
+            border-radius: 10px;
+            padding: 15px;
+            resize: vertical;
+            outline: none;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error-box {
+            min-height: 110px;
+            margin-top: 10px;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            background: #55e6c1;
+            color: #06121c;
+            border: none;
+            border-radius: 9px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #43d8b3;
+        }
+
+        /* RESULTS */
+
+        .empty {
+            color: #71859d;
+            text-align: center;
+            padding: 50px 10px;
+        }
+
+        .bug {
+            border: 1px solid #29415e;
+            background: #091523;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .bug-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .bug-title {
+            font-weight: bold;
+        }
+
+        .severity {
+            font-size: 11px;
+            padding: 5px 8px;
+            border-radius: 15px;
+            background: #302027;
+        }
+
+        .bug p {
+            color: #91a2b8;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 9px;
+        }
+
+        .fix {
+            background: #07111c;
+            border-left: 3px solid #55e6c1;
+            padding: 10px;
+            margin-top: 10px;
+            color: #a7f0df;
+            font-family: Consolas, monospace;
+            font-size: 13px;
+        }
+
+        /* TESTS */
+
+        .tests {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #20334d;
+            font-size: 13px;
+        }
+
+        th {
+            color: #8da0b7;
+        }
+
+        .pass {
+            color: #55e6c1;
+        }
+
+        /* RISK */
+
+        .risk {
+            margin-top: 20px;
+        }
+
+        .risk-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 13px;
+            border-bottom: 1px solid #20334d;
+        }
+
+        .high-risk {
+            color: #ff6475;
+        }
+
+        .medium-risk {
+            color: #f4ca65;
+        }
+
+        .low-risk {
+            color: #55e6c1;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 900px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 15px;
+            }
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 550px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Bug<span>Mind</span> AI
+        </div>
+
+        <div class="menu active">
+            🏠 Dashboard
+        </div>
+
+        <div class="menu">
+            🐛 Bug Analyzer
+        </div>
+
+        <div class="menu">
+            🧪 Test Generator
+        </div>
+
+        <div class="menu">
+            📊 Risk Intelligence
+        </div>
+
+        <div class="menu">
+            ✅ Validation
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <div>
+                <h1>Software Quality Intelligence</h1>
+
+                <div class="subtitle">
+                    Detect · Explain · Fix · Validate
+                </div>
+            </div>
+
+            <div class="online">
+                ● AI Analyzer Online
+            </div>
+
+        </div>
+
+
+        <!-- DASHBOARD CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <div class="card-title">
+                    Detected Bugs
+                </div>
+
+                <div
+                    class="number"
+                    id="totalBugs">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Critical Bugs
+                </div>
+
+                <div
+                    class="number red"
+                    id="criticalBugs">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    High Risk
+                </div>
+
+                <div
+                    class="number yellow"
+                    id="highBugs">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-title">
+                    Tests Generated
+                </div>
+
+                <div
+                    class="number green"
+                    id="testCount">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ANALYZER -->
+
+        <div class="grid">
+
+
+            <!-- CODE INPUT -->
+
+            <section class="panel">
+
+                <h2>
+                    🔍 Analyze Source Code
+                </h2>
+
+                <textarea id="code">
+
+def divide(a, b):
+    return a / b
+
+result = divide(10, 0)
+print(result)
+
+                </textarea>
+
+
+                <h2 style="margin-top:20px;">
+                    Execution Error / Log
+                </h2>
+
+
+                <textarea
+                    id="error"
+                    class="error-box">
+
+ZeroDivisionError: division by zero
+
+                </textarea>
+
+
+                <button
+                    class="analyze-btn"
+                    onclick="analyzeCode()">
+
+                    🚀 ANALYZE WITH BUGMIND AI
+
+                </button>
+
+            </section>
+
+
+            <!-- RESULTS -->
+
+            <section class="panel">
+
+                <h2>
+                    🧠 AI Analysis
+                </h2>
+
+                <div
+                    id="results"
+                    class="empty">
+
+                    Enter code and click
+                    <b>Analyze</b> to detect
+                    potential software defects.
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- TEST GENERATOR -->
+
+        <section class="panel tests">
+
+            <h2>
+                🧪 AI-Generated Test Cases
+            </h2>
+
+            <div id="tests">
+
+                <div class="empty">
+
+                    Test cases will appear
+                    after analysis.
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RISK INTELLIGENCE -->
+
+        <section class="panel risk">
+
+            <h2>
+                📊 Risk Intelligence
+            </h2>
+
+            <div class="risk-row">
+
+                <span>
+                    payment.py
+                </span>
+
+                <span class="high-risk">
+                    🔴 HIGH
+                </span>
+
+            </div>
+
+            <div class="risk-row">
+
+                <span>
+                    login.py
+                </span>
+
+                <span class="high-risk">
+                    🔴 HIGH
+                </span>
+
+            </div>
+
+            <div class="risk-row">
+
+                <span>
+                    user_service.py
+                </span>
+
+                <span class="medium-risk">
+                    🟠 MEDIUM
+                </span>
+
+            </div>
+
+            <div class="risk-row">
+
+                <span>
+                    product.py
+                </span>
+
+                <span class="low-risk">
+                    🟢 LOW
+                </span>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script>
+
+function analyzeCode() {
+
+    const code =
+        document.getElementById("code").value;
+
+    const error =
+        document.getElementById("error").value;
+
+
+    let bugs = [];
+
+
+    /*
+        DIVISION BY ZERO
+    */
+
+    if (
+        code.includes("/ 0") ||
+        code.includes("/0") ||
+        error.toLowerCase()
+            .includes("zerodivisionerror")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Division by Zero",
+
+            severity:
+                "HIGH",
+
+            confidence:
+                "99%",
+
+            line:
+                "Line 2",
+
+            root:
+                "The program performs a division operation where the denominator can become zero.",
+
+            explanation:
+                "Python will raise ZeroDivisionError when the denominator is zero.",
+
+            fix:
+                "if (b == 0) { throw new Error('Denominator cannot be zero'); }"
+
+        });
+
+    }
+
+
+    /*
+        INDEX ERROR
+    */
+
+    if (
+        error.toLowerCase()
+            .includes("indexerror")
+        ||
+        code.includes("[10]")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Index Out of Range",
+
+            severity:
+                "HIGH",
+
+            confidence:
+                "92%",
+
+            line:
+                "Runtime",
+
+            root:
+                "The program attempts to access an index outside the valid range.",
+
+            explanation:
+                "The requested array or list element may not exist.",
+
+            fix:
+                "Check the index against the length of the array before accessing it."
+
+        });
+
+    }
+
+
+    /*
+        KEY ERROR
+    */
+
+    if (
+        error.toLowerCase()
+            .includes("keyerror")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Missing Dictionary Key",
+
+            severity:
+                "MEDIUM",
+
+            confidence:
+                "91%",
+
+            line:
+                "Runtime",
+
+            root:
+                "The program tries to access a dictionary key that may not exist.",
+
+            explanation:
+                "Direct dictionary access can raise KeyError.",
+
+            fix:
+                "Use dictionary.get() or check whether the key exists."
+
+        });
+
+    }
+
+
+    /*
+        EVAL
+    */
+
+    if (
+        code.includes("eval(")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Unsafe eval()",
+
+            severity:
+                "HIGH",
+
+            confidence:
+                "96%",
+
+            line:
+                "Detected in source",
+
+            root:
+                "The program uses eval() to execute dynamic expressions.",
+
+            explanation:
+                "Untrusted input passed to eval() can execute unintended code.",
+
+            fix:
+                "Avoid eval() and validate or parse input explicitly."
+
+        });
+
+    }
+
+
+    /*
+        BARE EXCEPT
+    */
+
+    if (
+        code.includes("except:")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Bare Exception Handler",
+
+            severity:
+                "MEDIUM",
+
+            confidence:
+                "90%",
+
+            line:
+                "Detected in source",
+
+            root:
+                "A bare except catches almost every exception.",
+
+            explanation:
+                "This can hide important programming errors.",
+
+            fix:
+                "Catch specific exception types instead of using bare except."
+
+        });
+
+    }
+
+
+    /*
+        PASSWORD
+    */
+
+    if (
+        code.toLowerCase()
+            .includes("password =")
+    ) {
+
+        bugs.push({
+
+            type:
+                "Hard-coded Secret",
+
+            severity:
+                "CRITICAL",
+
+            confidence:
+                "97%",
+
+            line:
+                "Detected in source",
+
+            root:
+                "A password or secret appears directly in source code.",
+
+            explanation:
+                "Hard-coded credentials can be exposed through source repositories.",
+
+            fix:
+                "Store secrets in environment variables or a secure secret manager."
+
+        });
+
+    }
+
+
+    displayResults(bugs);
+
+    generateTests(bugs);
+
+}
+
+
+/* DISPLAY BUGS */
+
+function displayResults(bugs) {
+
+    const result =
+        document.getElementById("results");
+
+
+    document.getElementById(
+        "totalBugs"
+    ).innerText = bugs.length;
+
+
+    document.getElementById(
+        "criticalBugs"
+    ).innerText =
+        bugs.filter(
+            bug =>
+                bug.severity === "CRITICAL"
+        ).length;
+
+
+    document.getElementById(
+        "highBugs"
+    ).innerText =
+        bugs.filter(
+            bug =>
+                bug.severity === "HIGH"
+        ).length;
+
+
+    if (bugs.length === 0) {
+
+        result.innerHTML = `
+
+            <div class="empty">
+
+                🟢 No supported defects
+                detected.
+
+                <br><br>
+
+                The current analyzer
+                found no obvious issue.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    result.innerHTML =
+        bugs.map(
+            bug => `
+
+            <div class="bug">
+
+                <div class="bug-header">
+
+                    <div class="bug-title">
+
+                        🐛 ${bug.type}
+
+                    </div>
+
+                    <div class="severity">
+
+                        ${bug.severity}
+                        ·
+                        ${bug.confidence}
+
+                    </div>
+
+                </div>
+
+
+                <p>
+
+                    <b>Location:</b>
+                    ${bug.line}
+
+                </p>
+
+
+                <p>
+
+                    <b>Root Cause:</b>
+                    ${bug.root}
+
+                </p>
+
+
+                <p>
+
+                    <b>Why it matters:</b>
+                    ${bug.explanation}
+
+                </p>
+
+
+                <div class="fix">
+
+                    🔧 Suggested Fix
+
+                    <br><br>
+
+                    ${bug.fix}
+
+                </div>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+/* GENERATE TESTS */
+
+function generateTests(bugs) {
+
+    const container =
+        document.getElementById("tests");
+
+
+    let tests = [];
+
+
+    if (
+        bugs.some(
+            bug =>
+                bug.type ===
+                "Division by Zero"
+        )
+    ) {
+
+        tests = [
+
+            [
+                "Normal Division",
+                "divide(10,2)",
+                "5"
+            ],
+
+            [
+                "Zero Denominator",
+                "divide(10,0)",
+                "Controlled Error"
+            ],
+
+            [
+                "Negative Number",
+                "divide(-10,2)",
+                "-5"
+            ]
+
+        ];
+
+    }
+
+
+    else if (
+        bugs.some(
+            bug =>
+                bug.type ===
+                "Index Out of Range"
+        )
+    ) {
+
+        tests = [
+
+            [
+                "Valid Index",
+                "[1,2,3], 1",
+                "2"
+            ],
+
+            [
+                "Last Index",
+                "[1,2,3], 2",
+                "3"
+            ],
+
+            [
+                "Invalid Index",
+                "[1,2,3], 3",
+                "Controlled Error"
+            ]
+
+        ];
+
+    }
+
+
+    else {
+
+        tests = [
+
+            [
+                "Normal Input",
+                "Valid input",
+                "Expected result"
+            ],
+
+            [
+                "Boundary Input",
+                "Boundary value",
+                "Expected result"
+            ],
+
+            [
+                "Invalid Input",
+                "Invalid value",
+                "Controlled Error"
+            ]
+
+        ];
+
+    }
+
+
+    document.getElementById(
+        "testCount"
+    ).innerText =
+        tests.length;
+
+
+    let html = `
+
+        <table>
+
+            <tr>
+
+                <th>
+                    Test Case
+                </th>
+
+                <th>
+                    Input
+                </th>
+
+                <th>
+                    Expected
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+            </tr>
+
+    `;
+
+
+    tests.forEach(test => {
+
+        html += `
+
+            <tr>
+
+                <td>
+                    ${test[0]}
+                </td>
